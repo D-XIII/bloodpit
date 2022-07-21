@@ -1,25 +1,45 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import './style.css'
 import Coordinate from './dto/coordinate'
+function Canvas() {
+    let canvasRef = useRef<HTMLCanvasElement | null>(null)
+    let canvasCtxRef = useRef<CanvasRenderingContext2D | null>(null)
+    const [ctx, setCtx] = useState()
 
-function Canvas(this: any) {
-    const canvas = React.useRef()
-
+    const [hexSize, setHexSize] = useState(20)
+    const [canvasHex, setCanvasHex] = useState({ height: 50, width: 50 })
     const [canvasSize, setCanvasSize] = useState({
         canvasWidth: 800,
         canvasHeight: 600,
     })
-    const [hexSize, setHexSize] = useState(20)
 
     useEffect(() => {
-        const context = canvas.current.getContext('2d')
+        if (canvasRef.current) {
+            canvasCtxRef.current = canvasRef.current.getContext('2d')
+            // setCtx(canvasCtxRef.current)
 
-        const { canvasWidth, canvasHeight } = canvasSize
-        const canvasHex: any = {}
-        canvasHex.width = canvasWidth
-        canvasHex.height = canvasHeight
-        drawHex(canvasHex, { x: 50, y: 50 })
+            //componentWillMount()
+            setCanvasSize({ canvasWidth: 800, canvasHeight: 600 })
+
+            //componentDidMount()
+            const { canvasWidth, canvasHeight } = canvasSize
+            canvasHex.width = canvasWidth
+            canvasHex.height = canvasHeight
+            drawHex(canvasHex, { x: 50, y: 50 })
+        }
     }, [])
+
+    const drawHex = (canvasID: any, center: Coordinate) => {
+        for (let i = 0; i <= 5; i++) {
+            let start = getHexCornerCoord(center, i)
+            let end = getHexCornerCoord(center, i + 1)
+            drawLine(
+                canvasID,
+                { x: start.x, y: start.y },
+                { x: end.x, y: end.y }
+            )
+        }
+    }
 
     const getHexCornerCoord = (center: Coordinate, i: number) => {
         let angle_deg = 60 * i + 30
@@ -29,21 +49,12 @@ function Canvas(this: any) {
         return Point(x, y)
     }
 
-    const drawHex = (canvasID, center: Coordinate) => {
-        for (let i = 0; i <= 5; i++) {
-            let start = this.getHexCornerCoord(center, i)
-            let end = this.getHexCornerCoord(center, i + 1)
-            drawLine(
-                canvasID,
-                { x: start.x, y: start.y },
-                { x: end.x, y: end.y }
-            )
-        }
+    const Point = (x: number, y: number) => {
+        return { x: x, y: y }
     }
 
-    const drawLine = (canvasID: string, start: Coordinate, end: Coordinate) => {
-        const ctx = canvasID.getContext('2D')
-
+    const drawLine = (canvasID: any, start: Coordinate, end: Coordinate) => {
+        const ctx = canvasRef.current.getContext('2d')
         ctx.beginPath()
         ctx.moveTo(start.x, start.y)
         ctx.lineTo(end.x, end.y)
@@ -51,15 +62,14 @@ function Canvas(this: any) {
         ctx.closePath()
     }
 
-    const Point = (x: number, y: number) => {
-        return { x: x, y: y }
-    }
-
     return (
         <div>
-            <canvas ref={(canvasHex) => (this.canvasHex = canvasHex)}> </canvas>
+            <canvas
+                ref={canvasRef}
+                width={canvasSize.canvasWidth}
+                height={canvasSize.canvasHeight}
+            ></canvas>
         </div>
     )
 }
-
 export default Canvas
