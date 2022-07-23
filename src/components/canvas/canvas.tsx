@@ -10,29 +10,23 @@ function Canvas() {
     const [hexSize, setHexSize] = useState(20)
     const [{ hexHeight, hexWidth, vertDist, horizDist }, setHexParameter] =
         useState({
-            hexHeight: 10,
-            hexWidth: 8.660254037844386,
-            vertDist: 7.5,
-            horizDist: 8.660254037844386,
+            hexHeight: 1,
+            hexWidth: 1,
+            vertDist: 1,
+            horizDist: 1,
         })
 
     const getHexParameter = () => {
-        let hexHeight = hexSize / 2
-        let hexWidth = (Math.sqrt(3) / 2) * hexHeight
-        let vertDist = (hexHeight * 3) / 4
-        let horizDist = hexWidth
+        let newHexHeight = hexSize / 2
+        let newHexWidth = (Math.sqrt(3) / 2) * newHexHeight
+        let newVertDist = (newHexHeight * 3) / 4
+        let newHorizDist = newHexWidth
         return {
-            hexHeight: hexHeight,
-            hexWidth: hexWidth,
-            vertDist: vertDist,
-            horizDist: horizDist,
+            hexHeight: newHexHeight,
+            hexWidth: newHexWidth,
+            vertDist: newVertDist,
+            horizDist: newHorizDist,
         }
-    }
-
-    if (hexHeight == 1) {
-        setHexParameter(getHexParameter())
-        console.log(hexHeight, hexWidth, vertDist, horizDist)
-        console.log(getHexParameter())
     }
 
     const [canvasHex, setCanvasHex] = useState({ height: 50, width: 50 })
@@ -42,8 +36,8 @@ function Canvas() {
     })
 
     useEffect(() => {
-        // setHexParameter(getHexParameter())
-
+        setHexParameter(getHexParameter())
+        console.log('params :', hexHeight, hexWidth, vertDist, horizDist)
         if (canvasRef.current) {
             // canvasCtxRef.current = canvasRef.current.getContext('2d')
             //componentWillMount()
@@ -76,7 +70,7 @@ function Canvas() {
                     center.y > hexHeight / 2 &&
                     center.y < canvasHeight - hexHeight / 2
                 ) {
-                    console.log(r, c)
+                    // console.log(r, c)
                     drawHex(center)
                     drawHexCoordinate(center, hex(r, c))
                 }
