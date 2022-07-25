@@ -57,33 +57,80 @@ function Canvas() {
         }
     }, [])
 
-    const drawHexes = () => {
-        const { canvasHeight, canvasWidth } = canvasSize
+    // const drawHexes = () => {
+    //     const { canvasHeight, canvasWidth } = canvasSize
 
+    //     let qLeftSide = Math.round(hexOrigin.x / horizDist)
+    //     let qRightSide = Math.round((canvasWidth - hexOrigin.x) / horizDist)
+    //     let rTopSide = Math.round(hexOrigin.y / vertDist)
+    //     let rBottomSide = Math.round((canvasHeight - hexOrigin.y) / vertDist)
+
+    //     console.log(qLeftSide, qRightSide, rTopSide, rBottomSide)
+
+    //     for (let r = -rTopSide; r <= rBottomSide; r++) {
+    //         for (let c = -qLeftSide; c <= qRightSide; c++) {
+    //             let center = hexToPixel(hex(r, c))
+    //             if (
+    //                 center.x > hexWidth / 2 &&
+    //                 center.x < canvasWidth - hexWidth / 2 &&
+    //                 center.y > hexHeight / 2 &&
+    //                 center.y < canvasHeight - hexHeight / 2
+    //             ) {
+    //                 console.log(r, c)
+    //                 drawHex(center)
+    //                 drawHexCoordinate(center, hex(r, c))
+    //             }
+    //         }
+    //     }
+    // }
+
+    const drawHexes = () => {
+        const { canvasWidth, canvasHeight } = canvasSize
+        // const { hexWidth, hexHeight, vertDist, horizDist } = hexParametres;
+        // const hexOrigin = hexOrigin;
         let qLeftSide = Math.round(hexOrigin.x / horizDist)
         let qRightSide = Math.round((canvasWidth - hexOrigin.x) / horizDist)
         let rTopSide = Math.round(hexOrigin.y / vertDist)
         let rBottomSide = Math.round((canvasHeight - hexOrigin.y) / vertDist)
-
         console.log(qLeftSide, qRightSide, rTopSide, rBottomSide)
-
-        for (let r = -rTopSide; r <= rBottomSide; r++) {
-            for (let c = -qLeftSide; c <= qRightSide; c++) {
-                let center = hexToPixel(hex(r, c))
+        var p = 0
+        for (let r = 0; r <= rBottomSide; r++) {
+            if (r % 2 == 0 && r !== 0) {
+                p++
+            }
+            for (let q = -qLeftSide; q <= qRightSide; q++) {
+                const { x, y } = hexToPixel(hex(q - p, r))
                 if (
-                    center.x > hexWidth / 2 &&
-                    center.x < canvasWidth - hexWidth / 2 &&
-                    center.y > hexHeight / 2 &&
-                    center.y < canvasHeight - hexHeight / 2
+                    x > hexWidth / 2 &&
+                    x < canvasWidth - hexWidth / 2 &&
+                    y > hexHeight / 2 &&
+                    y < canvasHeight - hexHeight / 2
                 ) {
-                    console.log(r, c)
-                    drawHex(center)
-                    drawHexCoordinate(center, hex(r, c))
+                    drawHex(Point(x, y))
+                    drawHexCoordinate(Point(x, y), hex(q - p, r))
+                }
+            }
+        }
+
+        var n = 0
+        for (let r = -1; r >= -rTopSide; r--) {
+            if (r % 2 !== 0) {
+                n++
+            }
+            for (let q = -qLeftSide; q <= qRightSide; q++) {
+                const { x, y } = hexToPixel(hex(q + n, r))
+                if (
+                    x > hexWidth / 2 &&
+                    x < canvasWidth - hexWidth / 2 &&
+                    y > hexHeight / 2 &&
+                    y < canvasHeight - hexHeight / 2
+                ) {
+                    drawHex(Point(x, y))
+                    drawHexCoordinate(Point(x, y), hex(q + n, r))
                 }
             }
         }
     }
-
     const drawHex = (center: Coordinate) => {
         for (let i = 0; i <= 5; i++) {
             let start = getHexCornerCoord(center, i)
